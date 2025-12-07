@@ -25,7 +25,7 @@ echo "$json" | jq -c 'to_entries | .[] | select(.value.type == "paper")' | while
         if [[ -f "./${key}.pdf" ]] ; then continue ; fi
         echo "download $key"
         wget --load-cookies <(echo 'wiki.edg.com	FALSE	/	FALSE	0	TWIKISID	ceff3479724589d3cb52b0d1c7eb70b8') "$long_link" -O "./${key}.${link_ext}" || continue
-        chromium --headless --disable-gpu --no-pdf-header-footer --print-to-pdf="./${key}.pdf" "./${key}.html"
+        google-chrome --headless --disable-gpu --no-pdf-header-footer --print-to-pdf="./${key}.pdf" "./${key}.html"
         rm "./${key}.html" # Clean up HTML file
     elif [[ "$link_ext" == "pdf" ]] ; then
         # Direct download PDF
