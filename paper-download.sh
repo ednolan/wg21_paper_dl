@@ -8,6 +8,12 @@ URL="https://wg21.link/index.json"
 # Fetch the JSON data
 json=$(curl -s $URL)
 
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    declare chrome='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+else
+    declare chrome='google-chrome'
+fi
+
 # Parse the JSON and iterate over each entry
 echo "$json" | jq -c 'to_entries | .[] | select(.value.type == "paper")' | while read -r i; do
     # Extract data
@@ -25,7 +31,7 @@ echo "$json" | jq -c 'to_entries | .[] | select(.value.type == "paper")' | while
         if [[ -f "./${key}.pdf" ]] ; then continue ; fi
         echo "download $key"
         wget --load-cookies <(echo 'wiki.edg.com	FALSE	/	FALSE	0	TWIKISID	ceff3479724589d3cb52b0d1c7eb70b8') "$long_link" -O "./${key}.${link_ext}" || continue
-        google-chrome --headless --disable-gpu --no-pdf-header-footer --print-to-pdf="./${key}.pdf" "./${key}.html"
+        "$chrome" --headless --disable-gpu --no-pdf-header-footer --print-to-pdf="./${key}.pdf" "./${key}.html"
         rm "./${key}.html" # Clean up HTML file
     elif [[ "$link_ext" == "pdf" ]] ; then
         # Direct download PDF
